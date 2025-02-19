@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar/Navbar";
 import HeroSection from "../components/hero/Hero";
 import TechReviews from "../components/tech-reviews/TechReviews";
 import EditorsSection from "../components/editors-section/EditorsSection";
+import PodcastAd from "../components/podcast-ad/PodcastAd";
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
           <HeroSection />
           <EditorsSection />
           <TechReviews />
+          <PodcastAd />
         </div>
       </div>
     </main>
