@@ -7,46 +7,73 @@ export class AuthService {
 
   async signUp({ email, password, name }) {
     try {
-      // Create user
-      const { data: auth, error: signUpError } = await this.repository.signUp({
+      // Önce authentication kaydı yap
+      const { user, session } = await this.repository.signUp({
         email,
-        password
+        password,
+        name
       });
 
-      if (signUpError) throw signUpError;
-
-      // Create user profile
-      if (auth.user) {
-        const { error: profileError } = await this.repository.createProfile({
-          id: auth.user.id,
-          name,
-          email,
-          avatar: '/images/default-avatar.webp'
-        });
-
-        if (profileError) throw profileError;
-
-        // Assign default user role
-        const { error: roleError } = await this.repository.createUserRole(auth.user.id);
-
-        if (roleError) throw roleError;
+      if (!user) {
+        throw new Error('Registration failed');
       }
 
-      return auth;
+      await this.repository.createProfile({
+        id: user.id,
+        email: user.email,
+        name: name
+      });
+
+      await this.repository.createUserRole(user.id);
+
+      return { user, session };
     } catch (error) {
-      console.error('Error while signing up:', error);
-      throw error;
+      console.error('Registration error:', error);
+      if (error.message.includes('unique constraint')) {
+        throw new Error('This email address is already in use');
+      }
+      throw new Error(error.message || 'Registration error');
     }
   }
 
   async signIn({ email, password }) {
     try {
-      const { data, error } = await this.repository.signIn({ email, password });
+      const { data, error } = await this.repository.signIn({
+        email,
+        password
+      });
+
       if (error) throw error;
       return data;
     } catch (error) {
-      console.error('Error while signing in:', error);
-      throw error;
+      console.error('Login error:', error);
+      if (error.message.includes('Email not confirmed')) {
+        throw new Error('Please verify your email');
+      }
+      throw new Error('Invalid email or password');
+    }
+  }
+
+  async verifyEmail(email, token) {
+    try {
+      const { error } = await this.repository.verifyEmail(email, token);
+      if (error) throw error;
+    } catch (error) {
+      console.error('Email verification error:', error);
+      if (error.message.includes('Invalid token')) {
+        throw new Error('Invalid or expired verification code');
+      }
+      throw new Error('Email verification error');
+    }
+  }
+
+  async resendVerificationCode(email) {
+    try {
+      const { error } = await this.repository.resendVerificationCode(email);
+      if (error) throw error;
+    } catch (error) {
+      console.error('Verification code error:', error);
+      throw new Error('Verification code error');
     }
   }
 
@@ -55,8 +82,8 @@ export class AuthService {
       const { error } = await this.repository.signOut();
       if (error) throw error;
     } catch (error) {
-      console.error('Error while signing out:', error);
-      throw error;
+      console.error('Logout error:', error);
+      throw new Error('Logout error');
     }
   }
 
@@ -65,20 +92,11 @@ export class AuthService {
       const { error } = await this.repository.resetPassword(email);
       if (error) throw error;
     } catch (error) {
-      console.error('Error while sending password reset email:', error);
-      throw error;
+      console.error('Password reset error:', error);
+      throw new Error('Password reset email error');
     }
   }
 
-  async updatePassword(newPassword) {
-    try {
-      const { error } = await this.repository.updatePassword(newPassword);
-      if (error) throw error;
-    } catch (error) {
-      console.error('Error while updating password:', error);
-      throw error;
-    }
-  }
 
   async getCurrentSession() {
     try {
@@ -86,8 +104,8 @@ export class AuthService {
       if (error) throw error;
       return session;
     } catch (error) {
-      console.error('Error while checking session:', error);
-      throw error;
+      console.error('Session check error:', error);
+      return null;
     }
   }
 } 
