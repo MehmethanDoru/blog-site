@@ -20,7 +20,7 @@ const FeaturedPost = ({ category, title, excerpt, author, date, image, slug }) =
             {/* Content */}
             <div className="relative h-full flex flex-col justify-end p-6 text-white">
                 <div className="space-y-3">
-                    <span className="inline-block px-3 py-1 text-sm font-medium bg-indigo-600 rounded-full">
+                    <span className="inline-block px-3 py-1 text-sm font-medium bg-[#805aed] rounded-full">
                         {category}
                     </span>
                     <h2 className="text-3xl md:text-4xl font-bold leading-tight">
