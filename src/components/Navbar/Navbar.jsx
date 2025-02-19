@@ -8,12 +8,20 @@ import './Navbar.css';
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+    const categories = [
+        { name: 'TECHNOLOGY', slug: 'technology' },
+        { name: 'GADGET', slug: 'gadget' },
+        { name: 'SOFTWARE', slug: 'software' },
+        { name: 'APPS', slug: 'apps' },
+        { name: 'GAMES', slug: 'games' },
+        { name: 'PODCAST', slug: 'podcast' }
+    ];
+
     return (
         <nav className="bg-transparent w-full top-0 left-0 z-50 py-2 mt-2">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
 
-                    {/* Logo ve Kategoriler */}
                     <div className="flex items-center space-x-8">
                         <Link href="/" className="flex items-center space-x-2">
                             <Image src="/images/common/logo.png" alt="TechWire Logo" width={96} height={96} className="h-24 w-auto" />
@@ -21,12 +29,15 @@ const Navbar = () => {
                         
                         {/* Desktop Menu */}
                         <div className="hidden md:flex items-center space-x-8 navbar-menu">
-                            <Link href="/technology" className="text-sm font-medium text-gray-700 transition-colors">TECHNOLOGY</Link>
-                            <Link href="/gadget" className="text-sm font-medium text-gray-700 transition-colors">GADGET</Link>
-                            <Link href="/software" className="text-sm font-medium text-gray-700 transition-colors">SOFTWARE</Link>
-                            <Link href="/apps" className="text-sm font-medium text-gray-700 transition-colors">APPS</Link>
-                            <Link href="/games" className="text-sm font-medium text-gray-700 transition-colors">GAMES</Link>
-                            <Link href="/podcasts" className="text-sm font-medium text-gray-700 transition-colors">PODCAST</Link>
+                            {categories.map((category) => (
+                                <Link 
+                                    key={category.slug}
+                                    href={`/category/${category.slug}`} 
+                                    className="text-sm font-medium text-gray-700 transition-colors hover:text-[#805aed]"
+                                >
+                                    {category.name}
+                                </Link>
+                            ))}
                         </div>
                     </div>
 
@@ -71,13 +82,16 @@ const Navbar = () => {
                 {isMenuOpen && (
                     <div className="md:hidden border-t border-gray-100 navbar-menu">
                         <div className="px-2 pt-2 pb-3 space-y-1">
-                            <Link href="/technology" className="block px-3 py-2 text-sm font-medium text-gray-700 transition-colors">TECHNOLOGY</Link>
-                            <Link href="/gadget" className="block px-3 py-2 text-sm font-medium text-gray-700 transition-colors">GADGET</Link>
-                            <Link href="/software" className="block px-3 py-2 text-sm font-medium text-gray-700 transition-colors">SOFTWARE</Link>
-                            <Link href="/apps" className="block px-3 py-2 text-sm font-medium text-gray-700 transition-colors">APPS</Link>
-                            <Link href="/games" className="block px-3 py-2 text-sm font-medium text-gray-700 transition-colors">GAMES</Link>
-                            <Link href="/podcasts" className="block px-3 py-2 text-sm font-medium text-gray-700 transition-colors">PODCAST</Link>
-                            <Link href="/subscribe" className="block px-3 py-2 text-sm font-medium text-indigo-600 transition-colors">Subscribe</Link>
+                            {categories.map((category) => (
+                                <Link 
+                                    key={category.slug}
+                                    href={`/category/${category.slug}`}
+                                    className="block px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:text-[#805aed]"
+                                >
+                                    {category.name}
+                                </Link>
+                            ))}
+                            <Link href="/subscribe" className="block px-3 py-2 text-sm font-medium text-[#805aed] transition-colors">Subscribe</Link>
                             <Link href="/signin" className="block px-3 py-2 text-sm font-medium text-gray-700 transition-colors">Sign In</Link>
                         </div>
                     </div>
