@@ -30,7 +30,7 @@ const Navbar = () => {
                     </div>
 
                     {/* Right Side Menu */}
-                    <div className="hidden md:flex items-center space-x-6">
+                    <div className="hidden md:flex items-center space-x-8">
                         <Link href="/subscribe" className="text-medium font-bold text-[#805aed] hover:text-[#704ece] transition-colors">
                             Subscribe
                         </Link>
