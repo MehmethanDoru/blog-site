@@ -1,15 +1,37 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { UserCircle, FileText, Settings, Key } from 'lucide-react';
+import { UserCircle, FileText, Settings, LayoutDashboard, FolderKanban } from 'lucide-react';
+import { AuthService } from '@/lib/services/auth.service';
 
 export default function ProfileSidebar() {
   const pathname = usePathname();
+  const [session, setSession] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const menuItems = [
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const authService = new AuthService();
+        const currentSession = await authService.getCurrentSession();
+        console.log('Current Session:', currentSession);
+        console.log('Is Admin:', currentSession?.user?.app_metadata?.isAdmin);
+        setSession(currentSession);
+      } catch (error) {
+        console.error('Session check error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkSession();
+  }, []);
+
+  const baseMenuItems = [
     {
-      title: 'Profile Information',
+      title: 'Profile Info',
       href: '/profile',
       icon: UserCircle
     },
@@ -17,18 +39,45 @@ export default function ProfileSidebar() {
       title: 'My Posts',
       href: '/profile/posts',
       icon: FileText
+    }
+  ];
+
+  const adminMenuItems = [
+    {
+      title: 'Post Management',
+      href: '/profile/post-management',
+      icon: LayoutDashboard
+    },
+    {
+      title: 'Category Management',
+      href: '/profile/category-management',
+      icon: FolderKanban
     },
     {
       title: 'Account Settings',
       href: '/profile/settings',
       icon: Settings
-    },
-    {
-      title: 'Change Password',
-      href: '/profile/password',
-      icon: Key
     }
   ];
+
+  console.log('Session State:', session);
+  console.log('Is Admin Check:', session?.user?.app_metadata?.isAdmin);
+
+  const menuItems = session?.user?.app_metadata?.isAdmin 
+    ? [...baseMenuItems, ...adminMenuItems]
+    : baseMenuItems;
+
+  if (loading) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm p-4">
+        <div className="space-y-2 animate-pulse">
+          {[1, 2, 3].map((item) => (
+            <div key={item} className="h-10 bg-gray-200 rounded-md" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-4">
@@ -55,4 +104,4 @@ export default function ProfileSidebar() {
       </nav>
     </div>
   );
-} 
+}
