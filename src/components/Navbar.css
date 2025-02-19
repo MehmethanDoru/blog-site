@@ -1,0 +1,8 @@
+.navbar-menu a {
+    font-weight: bold;
+}
+
+.navbar-menu a:hover,
+.mobile-menu-button button:hover {
+    color: #805aed;
+}
