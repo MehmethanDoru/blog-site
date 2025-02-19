@@ -3,24 +3,23 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-const ReviewCard = ({ category, title, excerpt, author, date, image }) => {
+const ReviewCard = ({ category, title, excerpt, author, date, image, slug }) => {
     return (
         <article className="flex space-x-6">
-            
-            <div className="relative w-48 h-32 md:w-96 md:h-64 flex-shrink-0 overflow-hidden rounded-xl">
+            <Link href={`/blog/${slug}`} className="relative w-48 h-32 md:w-96 md:h-64 flex-shrink-0 overflow-hidden rounded-xl">
                 <Image
                     src={image || '/images/default-post.jpg'}
                     alt={title}
                     fill
                     className="object-cover rounded-xl transition-transform duration-300 hover:scale-110 hover:rounded-xl"
                 />
-            </div>
+            </Link>
 
             <div className="flex-1 min-w-0">
-                <div className="space-y-2 ">
+                <div className="space-y-2">
                     <Link href={`/category/${category.toLowerCase()}`} className="text-[#805aed] text-sm font-medium hover:text-[#7950e9] transition-colors">{category}</Link>
                     <h3 className="text-xl md:text-2xl font-bold leading-tight line-clamp-2">
-                        <Link href="#" className="hover:text-[#805aed] transition-colors">
+                        <Link href={`/blog/${slug}`} className="hover:text-[#805aed] transition-colors">
                             {title}
                         </Link>
                     </h3>

@@ -12,7 +12,8 @@ const TechReviews = () => {
             excerpt: 'Cursus iaculis etiam in In nullam donec sem sed consequat scelerisque nibh amet, massa egestas risus, gravida vel amet, imperdiet...',
             author: 'akbarh',
             date: 'July 7, 2021',
-            image: ''
+            image: '',
+            slug: 'ipad-pro-m1-chip-review'
         },
         {
             category: 'GADGET',
@@ -20,7 +21,8 @@ const TechReviews = () => {
             excerpt: 'Cursus iaculis etiam in In nullam donec sem sed consequat scelerisque nibh amet, massa egestas risus, gravida vel amet, imperdiet...',
             author: 'akbarh',
             date: 'July 7, 2021',
-            image: ''
+            image: '',
+            slug: 'dell-xps-13-2021-review'
         },
         {
             category: 'REVIEWS',
@@ -28,7 +30,8 @@ const TechReviews = () => {
             excerpt: 'Cursus iaculis etiam in In nullam donec sem sed consequat scelerisque nibh amet, massa egestas risus, gravida vel amet, imperdiet...',
             author: 'akbarh',
             date: 'July 7, 2021',
-            image: ''
+            image: '',
+            slug: 'watching-their-dust-photography'
         }
     ];
 

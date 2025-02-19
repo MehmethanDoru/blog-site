@@ -10,21 +10,21 @@ const EditorsPick = () => {
             category: 'GAMES',
             title: 'For Families of Teens at Microsoft Surface',
             image: '',
-            slug: 'microsoft-surface'
+            slug: 'for-families-of-teens-at-microsoft-surface'
         },
         {
             id: 2,
             category: 'TECHNOLOGY',
             title: 'Why Netflix shares are down 10%',
             image: '',
-            slug: 'netflix-shares'
+            slug: 'why-netflix-shares-are-down'
         },
         {
             id: 3,
             category: 'APPS',
             title: '6 Bots That Deliver Science and Serendipity on Twitter',
             image: '',
-            slug: 'twitter-bots'
+            slug: '6-bots-that-deliver-science'
         }
     ];
 

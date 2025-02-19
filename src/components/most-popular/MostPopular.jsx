@@ -12,7 +12,7 @@ const MostPopular = () => {
             author: 'akbarh',
             date: 'July 7, 2021',
             image: '',
-            slug: 'science-needs-cells',
+            slug: 'science-needs-your-cells',
             excerpt: 'Cursus iaculis etiam in In nullam donec sem sed consequat scelerisque nibh ...',
             views: 12453
         },
@@ -22,7 +22,7 @@ const MostPopular = () => {
             author: 'akbarh',
             date: 'July 7, 2021',
             image: '',
-            slug: 'gypsum-crystals',
+            slug: 'gypsum-crystals-desert',
             excerpt: 'Cursus iaculis etiam in In nullam donec sem sed consequat scelerisque nibh ...',
             views: 1545
         },
@@ -32,7 +32,7 @@ const MostPopular = () => {
             author: 'akbarh',
             date: 'July 7, 2021',
             image: '',
-            slug: 'scientists-march',
+            slug: 'scientists-march-against-policies',
             excerpt: 'Cursus iaculis etiam in In nullam donec sem sed consequat scelerisque nibh ...',
             views: 75
         }

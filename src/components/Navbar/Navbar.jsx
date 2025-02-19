@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 import './Navbar.css';
 
@@ -15,7 +16,7 @@ const Navbar = () => {
                     {/* Logo ve Kategoriler */}
                     <div className="flex items-center space-x-8">
                         <Link href="/" className="flex items-center space-x-2">
-                            <img src="images/common/logo.png" alt="TechWire Logo" className="h-24 w-auto" />
+                            <Image src="/images/common/logo.png" alt="TechWire Logo" width={96} height={96} className="h-24 w-auto" />
                         </Link>
                         
                         {/* Desktop Menu */}
