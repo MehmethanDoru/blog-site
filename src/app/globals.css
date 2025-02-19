@@ -4,6 +4,7 @@
 
 body {
   background-color: #d2d2d210;
+  overflow-x: hidden;
 }
 
 .gradient-background::before {

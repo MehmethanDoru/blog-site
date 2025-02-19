@@ -4,6 +4,7 @@ import HeroSection from "../components/hero/Hero";
 import TechReviews from "../components/tech-reviews/TechReviews";
 import EditorsSection from "../components/editors-section/EditorsSection";
 import PodcastAd from "../components/podcast-ad/PodcastAd";
+import MostPopular from "../components/most-popular/MostPopular";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
           <EditorsSection />
           <TechReviews />
           <PodcastAd />
+          <MostPopular />
         </div>
       </div>
     </main>
