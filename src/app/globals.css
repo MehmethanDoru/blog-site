@@ -2,7 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-
+body {
+  background-color: #d2d2d210;
+}
 
 .gradient-background::before {
   content: '';
@@ -15,7 +17,7 @@
   top: -300px;
   left: -200px;
   z-index: -10;
-  filter: blur(6px);
+  filter: blur(4px);
 }
 
 .gradient-background::after {
@@ -29,7 +31,7 @@
   top: -200px;
   right: -100px;
   z-index: -10;
-  filter: blur(8px);
+  filter: blur(7px);
 }
 
 .content-wrapper {
