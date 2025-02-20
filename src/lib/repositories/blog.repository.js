@@ -7,15 +7,36 @@ export class BlogRepository {
 
   // Basic CRUD operations
   async create(data) {
+    const postData = {
+      title: data.title,
+      excerpt: data.excerpt,
+      content: data.content,
+      category_id: data.category_id,
+      image: data.image,
+      status: data.status || 'draft',
+      author_id: data.author_id,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      views: 0,
+      slug: this.generateSlug(data.title)
+    };
+
     return await supabase
       .from(this.tableName)
-      .insert(data)
+      .insert(postData)
       .select(`
         *,
         categories (id, name, slug),
         users (id, name, avatar)
       `)
       .single();
+  }
+
+  generateSlug(title) {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
   }
 
   async update(id, data) {
