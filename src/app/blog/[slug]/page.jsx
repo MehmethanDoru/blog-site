@@ -2,66 +2,78 @@ import BlogContent from '@/components/blog-detail/BlogContent';
 import AuthorCard from '@/components/blog-detail/AuthorCard';
 import RelatedPosts from '@/components/blog-detail/RelatedPosts';
 import CommentSection from '@/components/blog-detail/CommentSection';
+import { BlogService } from '@/lib/services/blog.service';
 
-// Bu veriler daha sonra Supabase'den gelecek
 const getBlogData = async (slug) => {
-  return {
-    title: "iPad Pro M1 Chip: Bringing The MacBook Pro Power",
-    category: "GADGET",
-    author: {
-      name: "Mehmethan Doru",
-      avatar: "/images/default-avatar.webp",
-      bio: "Frontend Developer & Tech Enthusiast",
-      social: {
-        website: "https://mehmethandoru.com",
-        linkedin: "https://linkedin.com/in/mehmethandoru",
-        github: "https://github.com/mehmethandoru"
-      }
-    },
-    date: "July 7, 2021",
-    content: `
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+  try {
+    const blogService = new BlogService();
+    const post = await blogService.getPostBySlug(slug);
+    
+    if (!post) {
+      return null;
+    }
 
-      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    // get related posts
+    const relatedPosts = await blogService.getRelatedPosts({
+      categoryId: post.category_id,
+      currentPostId: post.id,
+      limit: 3
+    });
 
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-
-      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-    `,
-    image: "/images/dafault-blog.webp",
-    views: 12453
-  };
+    return {
+      post,
+      relatedPosts
+    };
+  } catch (error) {
+    console.error('blog data fetching error:', error);
+    return null;
+  }
 };
 
 export default async function BlogPost({ params }) {
-  const blogData = await getBlogData(params.slug);
+  const data = await getBlogData(params.slug);
+
+  if (!data || !data.post) {
+    return (
+      <main className="gradient-background min-h-screen relative">
+        <div className="content-wrapper">
+          <div className="container mx-auto px-4 py-16">
+            <div className="bg-white rounded-xl shadow-sm p-8 text-center">
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                Blog post not found
+              </h1>
+              <p className="text-gray-600">
+                The blog post you are looking for does not exist or has been removed.
+              </p>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  const { post, relatedPosts } = data;
 
   return (
     <main className="gradient-background min-h-screen relative">
       <div className="content-wrapper">
         <div className="container mx-auto px-4 lg:px-8 py-8 md:py-12">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Ana içerik - 8 sütun */}
             <div className="lg:col-span-8">
-              <BlogContent data={blogData} />
+              <BlogContent data={post} />
               <div className="hidden lg:block">
                 <CommentSection postId={params.slug} />
               </div>
             </div>
 
-            {/* Yan panel - 4 sütun */}
             <div className="lg:col-span-4 space-y-8">
               <div className="sticky top-8">
-                <AuthorCard author={blogData.author} />
-                <RelatedPosts 
-                  category={blogData.category} 
-                  currentPostId={params.slug}
-                />
+                <AuthorCard author={post.users} />
+                <RelatedPosts posts={relatedPosts} />
               </div>
             </div>
 
-            {/* Mobilde en altta görünecek yorumlar */}
+            {/* comments will be shown at the bottom on mobile */}
             <div className="lg:hidden col-span-1 lg:col-span-12">
               <CommentSection postId={params.slug} />
             </div>

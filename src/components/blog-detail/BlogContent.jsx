@@ -2,46 +2,61 @@ import Image from 'next/image';
 import { CalendarDays, Eye } from 'lucide-react';
 
 const BlogContent = ({ data }) => {
+  if (!data) return null;
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('tr-TR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  const formatViews = (views) => {
+    if (views >= 1000000) {
+      return `${(views / 1000000).toFixed(1)}M`;
+    }
+    if (views >= 1000) {
+      return `${(views / 1000).toFixed(1)}K`;
+    }
+    return views.toLocaleString();
+  };
+
   return (
     <article className="bg-white rounded-xl shadow-lg p-6 mb-8">
       <div className="space-y-4">
-        {/* Kategori ve Başlık */}
         <div>
-          <span className="text-[#805aed] font-semibold">{data.category}</span>
+          <span className="text-[#805aed] font-semibold">{data.categories?.name || 'general'}</span>
           <h1 className="text-3xl md:text-4xl font-bold mt-2">{data.title}</h1>
         </div>
 
-        {/* Meta Bilgileri */}
+        {/* meta information */}
         <div className="flex items-center gap-4 text-gray-600 text-sm">
           <div className="flex items-center gap-1">
             <CalendarDays size={16} />
-            <span>{data.date}</span>
+            <span>{formatDate(data.created_at)}</span>
           </div>
-          <div className="flex items-center gap-1">
-            <Eye size={16} />
-            <span>{data.views.toLocaleString()} views</span>
+          <div className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full">
+            <Eye size={16} className="text-[#805aed]" />
+            <span>{formatViews(data.views || 0)} views</span>
           </div>
         </div>
 
-        {/* Blog Görseli */}
-        <div className="relative w-full h-[400px] rounded-xl overflow-hidden">
-          <Image
-            src={data.image}
-            alt={data.title}
-            fill
-            className="object-cover"
-            priority
-          />
-        </div>
+        {/* blog image */}
+        {data.image && (
+          <div className="relative w-full h-[400px] rounded-xl overflow-hidden">
+            <Image
+              src={data.image}
+              alt={data.title}
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
+        )}
 
-        {/* Blog İçeriği */}
-        <div className="prose prose-lg max-w-none mt-8">
-          {data.content.split('\n\n').map((paragraph, index) => (
-            <p key={index} className="text-gray-700 leading-relaxed">
-              {paragraph.trim()}
-            </p>
-          ))}
-        </div>
+        {/* blog content */}
+        <div className="prose prose-lg max-w-none mt-8" dangerouslySetInnerHTML={{ __html: data.content }} />
       </div>
     </article>
   );

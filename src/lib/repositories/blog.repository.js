@@ -91,7 +91,15 @@ export class BlogRepository {
       .select(`
         *,
         categories (id, name, slug),
-        users (id, name, avatar)
+        users (
+          id, 
+          name, 
+          avatar,
+          bio,
+          website,
+          linkedin,
+          github
+        )
       `)
       .eq('slug', slug)
       .single();
@@ -129,5 +137,27 @@ export class BlogRepository {
       .eq('id', postId)
       .select()
       .single();
+  }
+
+  async incrementViews(slug) {
+    // Get the current views
+    const { data: post } = await supabase
+      .from(this.tableName)
+      .select('views')
+      .eq('slug', slug)
+      .single();
+
+    if (!post) return null;
+
+    // Increment the views
+    const { data: updatedPost, error } = await supabase
+      .from(this.tableName)
+      .update({ views: (post.views || 0) + 1 })
+      .eq('slug', slug)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return updatedPost;
   }
 } 

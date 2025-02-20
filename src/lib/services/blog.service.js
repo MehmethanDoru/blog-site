@@ -29,6 +29,8 @@ export class BlogService {
       
       if (error) throw error;
       
+      await this.repository.incrementViews(slug);
+      
       return post;
     } catch (error) {
       console.error('Blog post get error:', error);
