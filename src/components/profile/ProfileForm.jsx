@@ -14,7 +14,7 @@ export default function ProfileForm() {
     name: '',
     bio: '',
     website: '',
-    twitter: '',
+    hackerrank: '',
     linkedin: '',
     github: ''
   });
@@ -26,22 +26,24 @@ export default function ProfileForm() {
   const loadProfile = async () => {
     try {
       const authService = new AuthService();
+      const userService = new UserService();
       const currentSession = await authService.getCurrentSession();
       
       if (!currentSession) {
-        throw new Error('Oturum bulunamadı');
+        throw new Error('Session not found');
       }
 
       setSession(currentSession);
       
-      // Form verilerini doldur
+      const userProfile = await userService.getUserProfile(currentSession.user.id);
+      
       setFormData({
         name: currentSession.user.user_metadata?.name || '',
-        bio: currentSession.user.user_metadata?.bio || '',
-        website: currentSession.user.user_metadata?.website || '',
-        twitter: currentSession.user.user_metadata?.twitter || '',
-        linkedin: currentSession.user.user_metadata?.linkedin || '',
-        github: currentSession.user.user_metadata?.github || ''
+        bio: userProfile?.bio || '',
+        website: userProfile?.website || '',
+        hackerrank: userProfile?.hackerrank || '',
+        linkedin: userProfile?.linkedin || '',
+        github: userProfile?.github || ''
       });
     } catch (error) {
       console.error('Error loading profile:', error);
@@ -65,14 +67,21 @@ export default function ProfileForm() {
 
     try {
       const userService = new UserService();
+      
+      // Update profile
       await userService.updateUserProfile(session.user.id, {
-        user_metadata: {
-          ...session.user.user_metadata,
-          ...formData
-        }
+        name: formData.name,
+        bio: formData.bio,
+        website: formData.website,
+        hackerrank: formData.hackerrank,
+        linkedin: formData.linkedin,
+        github: formData.github,
+        updated_at: new Date().toISOString()
       });
 
-      toast.success('Updated successfully');
+      toast.success('Profile updated successfully');
+      
+      await loadProfile();
     } catch (error) {
       console.error('Update error:', error);
       toast.error('Update error');
@@ -130,7 +139,7 @@ export default function ProfileForm() {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-[#805aed] focus:outline-none focus:ring-1 focus:ring-[#805aed]"
             />
           </div>
 
@@ -145,7 +154,7 @@ export default function ProfileForm() {
               rows={4}
               value={formData.bio}
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-[#805aed] focus:outline-none focus:ring-1 focus:ring-[#805aed]"
             />
           </div>
 
@@ -160,23 +169,23 @@ export default function ProfileForm() {
               name="website"
               value={formData.website}
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-[#805aed]"
             />
           </div>
 
           {/* Social Media */}
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
             <div>
-              <label htmlFor="twitter" className="block text-sm font-medium text-gray-700">
-                Twitter
+              <label htmlFor="hackerrank" className="block text-sm font-medium text-gray-700">
+                HackerRank
               </label>
               <input
                 type="text"
-                id="twitter"
-                name="twitter"
-                value={formData.twitter}
+                id="hackerrank"
+                name="hackerrank"
+                value={formData.hackerrank}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-[#805aed] focus:outline-none focus:ring-1 focus:ring-[#805aed]"
               />
             </div>
 
@@ -190,7 +199,7 @@ export default function ProfileForm() {
                 name="linkedin"
                 value={formData.linkedin}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-[#805aed] focus:outline-none focus:ring-1 focus:ring-[#805aed]"
               />
             </div>
 
@@ -204,7 +213,7 @@ export default function ProfileForm() {
                 name="github"
                 value={formData.github}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-[#805aed] focus:outline-none focus:ring-1 focus:ring-[#805aed]"
               />
             </div>
           </div>

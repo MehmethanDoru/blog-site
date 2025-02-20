@@ -16,8 +16,15 @@ export class UserRepository {
 
   async update(id, data) {
     return await supabase
-      .from(this.tableName)
-      .update(data)
+      .from('users')
+      .update({
+        bio: data.bio,
+        website: data.website,
+        hackerrank: data.hackerrank,
+        linkedin: data.linkedin,
+        github: data.github,
+        updated_at: data.updated_at
+      })
       .eq('id', id)
       .select()
       .single();

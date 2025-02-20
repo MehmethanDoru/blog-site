@@ -1,4 +1,5 @@
 import { UserRepository } from '../repositories/user.repository';
+import { supabase } from '../config/supabase';
 
 export class UserService {
   constructor() {
@@ -40,8 +41,26 @@ export class UserService {
 
   async updateUserProfile(userId, updates) {
     try {
-      const { data: profile, error } = await this.repository.update(userId, updates);
-      if (error) throw error;
+      // First update auth metadata
+      const { error: authError } = await supabase.auth.updateUser({
+        data: {
+          name: updates.name
+        }
+      });
+
+      if (authError) throw authError;
+
+      // Then update the database
+      const { data: profile, error: dbError } = await this.repository.update(userId, {
+        bio: updates.bio,
+        website: updates.website,
+        hackerrank: updates.hackerrank,
+        linkedin: updates.linkedin,
+        github: updates.github,
+        updated_at: updates.updated_at
+      });
+
+      if (dbError) throw dbError;
       return profile;
     } catch (error) {
       console.error('Error while updating user profile:', error);
