@@ -7,12 +7,12 @@ export class CategoryService {
 
   async getAllCategories() {
     try {
-      const { data: categories, error } = await this.repository.findAll();
+      const { data, error } = await this.repository.findAll();
       if (error) throw error;
-      return categories;
+      return data;
     } catch (error) {
       console.error('Categories get error:', error);
-      throw error;
+      throw new Error('Error fetching categories');
     }
   }
 
@@ -62,34 +62,34 @@ export class CategoryService {
 
   async createCategory(categoryData) {
     try {
-      const { data: category, error } = await this.repository.create(categoryData);
+      const { data, error } = await this.repository.create(categoryData);
       if (error) throw error;
-      return category;
+      return data;
     } catch (error) {
       console.error('Category creation error:', error);
-      throw error;
+      throw new Error('Error creating category');
     }
   }
 
-  async updateCategory(id, categoryData) {
+  async updateCategory(categoryId, categoryData) {
     try {
-      const { data: category, error } = await this.repository.update(id, categoryData);
+      const { data, error } = await this.repository.update(categoryId, categoryData);
       if (error) throw error;
-      return category;
+      return data;
     } catch (error) {
       console.error('Category update error:', error);
-      throw error;
+      throw new Error('Error updating category');
     }
   }
 
-  async deleteCategory(id) {
+  async deleteCategory(categoryId) {
     try {
-      const { error } = await this.repository.delete(id);
+      const { error } = await this.repository.delete(categoryId);
       if (error) throw error;
       return true;
     } catch (error) {
       console.error('Category deletion error:', error);
-      throw error;
+      throw new Error('Error deleting category');
     }
   }
 } 

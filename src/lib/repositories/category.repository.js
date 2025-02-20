@@ -9,15 +9,28 @@ export class CategoryRepository {
   async create(data) {
     return await supabase
       .from(this.tableName)
-      .insert(data)
+      .insert([{
+        name: data.name,
+        slug: data.slug,
+        description: data.description,
+        image: data.image,
+        created_at: new Date().toISOString()
+      }])
       .select()
       .single();
   }
 
   async update(id, data) {
+    const updateData = {
+      name: data.name,
+      slug: data.slug,
+      description: data.description,
+      image: data.image
+    };
+
     return await supabase
       .from(this.tableName)
-      .update(data)
+      .update(updateData)
       .eq('id', id)
       .select()
       .single();
@@ -35,7 +48,7 @@ export class CategoryRepository {
     return await supabase
       .from(this.tableName)
       .select('*')
-      .order('name');
+      .order('created_at', { ascending: false });
   }
 
   async findBySlug(slug) {

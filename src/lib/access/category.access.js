@@ -7,25 +7,11 @@ export class CategoryAccess {
     this.authService = new AuthService();
   }
 
-  // Public endpoints
   async getCategories() {
     return await this.service.getAllCategories();
   }
 
-  async getCategoryBySlug(slug) {
-    return await this.service.getCategoryBySlug(slug);
-  }
-
-  async getCategoryStats(categoryId) {
-    return await this.service.getCategoryStats(categoryId);
-  }
-
-  async getTrendingTopics(limit) {
-    return await this.service.getTrendingTopics(limit);
-  }
-
-  // Admin endpoints
-  async createCategory(adminId, categoryData) {
+  async createCategory(userId, categoryData) {
     const session = await this.authService.getCurrentSession();
     if (!session || !session.user.app_metadata?.isAdmin) {
       throw new Error('This action requires admin privileges!');
@@ -33,7 +19,7 @@ export class CategoryAccess {
     return await this.service.createCategory(categoryData);
   }
 
-  async updateCategory(adminId, categoryId, categoryData) {
+  async updateCategory(userId, categoryId, categoryData) {
     const session = await this.authService.getCurrentSession();
     if (!session || !session.user.app_metadata?.isAdmin) {
       throw new Error('This action requires admin privileges!');
@@ -41,7 +27,7 @@ export class CategoryAccess {
     return await this.service.updateCategory(categoryId, categoryData);
   }
 
-  async deleteCategory(adminId, categoryId) {
+  async deleteCategory(userId, categoryId) {
     const session = await this.authService.getCurrentSession();
     if (!session || !session.user.app_metadata?.isAdmin) {
       throw new Error('This action requires admin privileges!');
