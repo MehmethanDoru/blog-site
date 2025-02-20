@@ -60,32 +60,42 @@ export class CategoryRepository {
   }
 
   async getStats(categoryId) {
-    // Total posts count
-    const postsCount = await supabase
-      .from('posts')
-      .select('*', { count: 'exact' })
-      .eq('category_id', categoryId)
-      .eq('status', 'published');
+    try {
+      // Get total posts count
+      const { count: totalPosts } = await supabase
+        .from('posts')
+        .select('*', { count: 'exact', head: true })
+        .eq('category_id', categoryId);
 
-    // Total views
-    const viewsData = await supabase
-      .from('posts')
-      .select('views')
-      .eq('category_id', categoryId)
-      .eq('status', 'published');
+      // Get total views
+      const { data: viewsData } = await supabase
+        .from('posts')
+        .select('views')
+        .eq('category_id', categoryId);
 
-    // Unique authors
-    const authorsData = await supabase
-      .from('posts')
-      .select('author_id')
-      .eq('category_id', categoryId)
-      .eq('status', 'published');
+      const totalViews = viewsData?.reduce((sum, post) => sum + (post.views || 0), 0) || 0;
 
-    return {
-      postsCount,
-      viewsData,
-      authorsData
-    };
+      // Get unique authors count
+      const { data: authorsData } = await supabase
+        .from('posts')
+        .select('author_id')
+        .eq('category_id', categoryId);
+
+      const uniqueAuthors = new Set(authorsData?.map(post => post.author_id) || []).size;
+
+      return {
+        totalPosts: totalPosts || 0,
+        totalViews,
+        uniqueAuthors
+      };
+    } catch (error) {
+      console.error('Error getting category stats:', error);
+      return {
+        totalPosts: 0,
+        totalViews: 0,
+        uniqueAuthors: 0
+      };
+    }
   }
 
   async getTrendingTopics(limit = 5) {

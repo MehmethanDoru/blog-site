@@ -16,6 +16,29 @@ export class CategoryService {
     }
   }
 
+  async getNavigationCategories() {
+    try {
+      const { data, error } = await this.repository.findAll();
+      if (error) throw error;
+
+      const sortedCategories = data.sort((a, b) => 
+        new Date(b.created_at) - new Date(a.created_at)
+      );
+
+      // get first 5 categories
+      const mainCategories = sortedCategories.slice(0, 5);
+      const moreCategories = sortedCategories.slice(5);
+
+      return {
+        mainCategories,
+        moreCategories
+      };
+    } catch (error) {
+      console.error('Navigation categories get error:', error);
+      throw new Error('Error fetching navigation categories');
+    }
+  }
+
   async getCategoryBySlug(slug) {
     try {
       const { data: category, error } = await this.repository.findBySlug(slug);
@@ -29,23 +52,15 @@ export class CategoryService {
 
   async getCategoryStats(categoryId) {
     try {
-      const { postsCount, viewsData, authorsData } = await this.repository.getStats(categoryId);
-
-      if (postsCount.error) throw postsCount.error;
-      if (viewsData.error) throw viewsData.error;
-      if (authorsData.error) throw authorsData.error;
-
-      const totalViews = viewsData.data.reduce((sum, post) => sum + post.views, 0);
-      const uniqueAuthors = new Set(authorsData.data.map(post => post.author_id)).size;
-
-      return {
-        totalPosts: postsCount.count,
-        totalViews,
-        uniqueAuthors
-      };
+      const stats = await this.repository.getStats(categoryId);
+      return stats;
     } catch (error) {
       console.error('Category statistics get error:', error);
-      throw error;
+      return {
+        totalPosts: 0,
+        totalViews: 0,
+        uniqueAuthors: 0
+      };
     }
   }
 

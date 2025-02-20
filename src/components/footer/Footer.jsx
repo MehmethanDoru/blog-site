@@ -1,9 +1,30 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { CategoryService } from '@/lib/services/category.service';
 
 const Footer = () => {
+    const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        loadCategories();
+    }, []);
+
+    const loadCategories = async () => {
+        try {
+            const categoryService = new CategoryService();
+            const data = await categoryService.getAllCategories();
+            setCategories(data.slice(0, 4)); 
+        } catch (error) {
+            console.error('Error loading categories:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <footer className="bg-transparent border-t mt-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -14,9 +35,10 @@ const Footer = () => {
                             <div className="w-20 h-20 md:w-28 md:h-28">
                                 <Image
                                     src="/images/common/logo.png"
-                                    alt="Claris"
+                                    alt="Claris Logo"
                                     width={96}
                                     height={96}
+                                    priority
                                     className="w-full h-full"
                                 />
                             </div>
@@ -59,22 +81,29 @@ const Footer = () => {
                         </ul>
                     </div>
 
-                    {/* Tech News */}
+                    {/* Tech Blogs */}
                     <div className="col-span-1">
-                        <h3 className="text-sm font-semibold text-gray-900 mb-4">Tech News</h3>
+                        <h3 className="text-sm font-semibold text-gray-900 mb-4">Tech Blogs</h3>
                         <ul className="space-y-2 sm:space-y-3">
-                            <li>
-                                <Link href="/technology" className="text-sm sm:text-base text-gray-600 hover:text-[#805aed]">Technology</Link>
-                            </li>
-                            <li>
-                                <Link href="/gadget" className="text-sm sm:text-base text-gray-600 hover:text-[#805aed]">Gadget</Link>
-                            </li>
-                            <li>
-                                <Link href="/software" className="text-sm sm:text-base text-gray-600 hover:text-[#805aed]">Software</Link>
-                            </li>
-                            <li>
-                                <Link href="/games" className="text-sm sm:text-base text-gray-600 hover:text-[#805aed]">Games</Link>
-                            </li>
+                            {loading ? (
+                                // Loading durumu için placeholder
+                                Array(4).fill(0).map((_, index) => (
+                                    <li key={index} className="animate-pulse">
+                                        <div className="h-4 bg-gray-200 rounded w-24"></div>
+                                    </li>
+                                ))
+                            ) : (
+                                categories.map((category) => (
+                                    <li key={category.id}>
+                                        <Link 
+                                            href={`/category/${category.slug}`} 
+                                            className="text-sm sm:text-base text-gray-600 hover:text-[#805aed]"
+                                        >
+                                            {category.name}
+                                        </Link>
+                                    </li>
+                                ))
+                            )}
                         </ul>
                     </div>
 

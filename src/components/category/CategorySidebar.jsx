@@ -1,64 +1,79 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Newspaper, TrendingUp, Tag } from 'lucide-react';
-
-const getTrendingTopics = () => {
-  return [
-    { id: 1, name: 'Artificial Intelligence', count: 45 },
-    { id: 2, name: 'Machine Learning', count: 32 },
-    { id: 3, name: 'Web Development', count: 28 },
-    { id: 4, name: 'Cybersecurity', count: 24 },
-    { id: 5, name: 'Cloud Computing', count: 19 }
-  ];
-};
+import { CategoryService } from '@/lib/services/category.service';
 
 const CategorySidebar = ({ category }) => {
-  const trendingTopics = getTrendingTopics();
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({
+    totalPosts: 0,
+    totalViews: 0,
+    uniqueAuthors: 0
+  });
+
+  useEffect(() => {
+    loadData();
+  }, [category]);
+
+  const loadData = async () => {
+    try {
+      const categoryService = new CategoryService();
+      
+      // Load category statistics
+      if (category) {
+        const categoryStats = await categoryService.getCategoryStats(category.id);
+        setStats(categoryStats);
+      }
+    } catch (error) {
+      console.error('Error loading sidebar data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatNumber = (num) => {
+    if (num >= 1000) {
+      return `${(num / 1000).toFixed(1)}K`;
+    }
+    return num;
+  };
 
   return (
     <div className="space-y-8">
-
       {/* category statistics */}
       <div className="bg-white rounded-xl shadow-sm p-6">
         <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
           <Newspaper className="text-[#805aed]" size={20} />
-          Kategori İstatistikleri
+          Category Statistics
         </h3>
         <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <span className="text-gray-600">Toplam Yazı</span>
-            <span className="font-medium">156</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-gray-600">Toplam Yazar</span>
-            <span className="font-medium">12</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-gray-600">Toplam Görüntülenme</span>
-            <span className="font-medium">45.2K</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Trend Topics */}
-      <div className="bg-white rounded-xl shadow-sm p-6">
-        <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-          <TrendingUp className="text-[#805aed]" size={20} />
-          Trend Konular
-        </h3>
-        <div className="space-y-3">
-          {trendingTopics.map((topic) => (
-            <div key={topic.id} className="flex justify-between items-center">
-              <Link 
-                href={`/category/${topic.name.toLowerCase().replace(/\s+/g, '-')}`}
-                className="text-gray-600 hover:text-[#805aed] transition-colors flex items-center gap-2"
-              >
-                <Tag size={16} />
-                {topic.name}
-              </Link>
-              <span className="text-sm text-gray-500">{topic.count}</span>
-            </div>
-          ))}
+          {loading ? (
+            // Loading placeholders
+            Array(3).fill(0).map((_, index) => (
+              <div key={index} className="flex justify-between items-center">
+                <div className="h-4 bg-gray-200 rounded w-24 animate-pulse"></div>
+                <div className="h-4 bg-gray-200 rounded w-12 animate-pulse"></div>
+              </div>
+            ))
+          ) : (
+            <>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Total Posts</span>
+                <span className="font-medium">{formatNumber(stats.totalPosts)}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Total Authors</span>
+                <span className="font-medium">{formatNumber(stats.uniqueAuthors)}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Total Views</span>
+                <span className="font-medium">{formatNumber(stats.totalViews)}</span>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
@@ -69,6 +84,7 @@ const CategorySidebar = ({ category }) => {
             src="/images/ads.jpg"
             alt="Advertisement"
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-contain"
           />    
         </div>

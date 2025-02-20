@@ -2,13 +2,14 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 
-const CategoryFilters = ({ totalPosts, currentFilter }) => {
+const CategoryFilters = ({ category }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const currentFilter = searchParams.get('filter') || 'latest';
 
   const filters = [
-    { id: 'latest', name: 'En Yeni' },
-    { id: 'popular', name: 'En Popüler' },
+    { id: 'latest', name: 'Latest' },
+    { id: 'popular', name: 'Popular' },
   ];
 
   const handleFilterChange = (filterId) => {
@@ -21,11 +22,11 @@ const CategoryFilters = ({ totalPosts, currentFilter }) => {
   return (
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 space-y-4 sm:space-y-0">
       <div className="text-gray-600">
-        Toplam <span className="font-medium text-gray-900">{totalPosts}</span> yazı
+        Total <span className="font-medium text-gray-900">{category.totalPosts || 0}</span> blog
       </div>
 
       <div className="flex items-center space-x-2">
-        <span className="text-sm text-gray-500">Sırala:</span>
+        <span className="text-sm text-gray-500">Sort by:</span>
         <div className="flex items-center space-x-2">
           {filters.map((filter) => (
             <button

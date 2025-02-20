@@ -7,10 +7,11 @@ const CategoryHeader = ({ data }) => {
       <div className="absolute inset-0">
         <Image
           src={data.image || '/images/dafault-blog.webp'}
-          alt={data.title}
+          alt={`${data.title} category image`}
           fill
-          className="object-cover"
+          sizes="100vw"
           priority
+          className="object-cover"
         />
 
         <div className="absolute inset-0 bg-black/50" />
@@ -27,7 +28,7 @@ const CategoryHeader = ({ data }) => {
             </p>
             <div className="mt-6 inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full">
               <span className="text-white font-medium">
-                {data.totalPosts} yazı
+                {data.totalPosts || 0} blog
               </span>
             </div>
           </div>
