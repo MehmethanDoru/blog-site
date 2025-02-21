@@ -1,9 +1,10 @@
 import { notFound } from 'next/navigation';
+import { BlogService } from '@/lib/services/blog.service';
 import BlogContent from '@/components/blog-detail/BlogContent';
+import CommentSection from '@/components/blog-detail/CommentSection';
 import AuthorCard from '@/components/blog-detail/AuthorCard';
 import RelatedPosts from '@/components/blog-detail/RelatedPosts';
-import CommentSection from '@/components/blog-detail/CommentSection';
-import { BlogService } from '@/lib/services/blog.service';
+import ReadHistoryTracker from '@/components/blog-detail/ReadHistoryTracker';
 
 // page metadata
 export async function generateMetadata({ params: { slug } }) {
@@ -51,6 +52,9 @@ export default async function BlogPost({ params: { slug } }) {
       <main className="gradient-background min-h-screen relative">
         <div className="content-wrapper">
           <div className="container mx-auto px-4 lg:px-8 py-8 md:py-12">
+            {/* Okuma geçmişi takibi */}
+            <ReadHistoryTracker postId={post.id} />
+            
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               <div className="lg:col-span-8">
                 <BlogContent data={post} />

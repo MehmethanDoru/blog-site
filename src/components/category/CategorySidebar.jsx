@@ -31,7 +31,7 @@ const CategorySidebar = ({ category }) => {
         console.log('Received category stats:', categoryStats);
         
         if (categoryStats) {
-          setStats(categoryStats);
+          setStats(categoryStats);    
         }
       } catch (error) {
         console.error('Error loading category stats:', error);
@@ -112,4 +112,4 @@ const CategorySidebar = ({ category }) => {
   );
 };
 
-export default CategorySidebar; 
+export default CategorySidebar;

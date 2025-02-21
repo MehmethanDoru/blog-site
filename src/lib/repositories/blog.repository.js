@@ -37,64 +37,59 @@ export class BlogRepository {
   }
 
   async findAll({ page = 1, limit = 10, filter = 'latest', categoryId = null }) {
-    const from = (page - 1) * limit;
-    const to = from + limit - 1;
+    try {
+      const from = (page - 1) * limit;
+      const to = from + limit - 1;
 
-    let query = supabase
-      .from('posts')
-      .select(`
-        id,
-        title,
-        excerpt,
-        slug,
-        views,
-        created_at,
-        updated_at,
-        image,
-        author_id,
-        categories (
-          id,
-          name,
-          slug
-        )
-      `, { count: 'exact' });
+      // Ana sorgu - postları ve kategorileri al
+      let query = supabase
+        .from('posts')
+        .select('*, categories(*)');
 
-    if (categoryId) {
-      query = query.eq('category_id', categoryId);
-    }
+      // Kategori filtresi
+      if (categoryId) {
+        query = query.eq('category_id', categoryId);
+      }
 
-    if (filter === 'latest') {
-      query = query.order('created_at', { ascending: false });
-    } else if (filter === 'popular') {
-      query = query.order('views', { ascending: false });
-    }
+      // Sıralama filtresi
+      if (filter === 'popular') {
+        query = query.order('views', { ascending: false });
+      } else {
+        query = query.order('created_at', { ascending: false });
+      }
 
-    const { data: posts, error, count } = await query.range(from, to);
+      // Sayfalama
+      query = query.range(from, to);
 
-    if (error) {
-      console.error('Error fetching posts:', error);
-      return { data: null, error, count: 0 };
-    }
+      const { data: posts, error, count } = await query;
 
-    // Yazarları ayrı bir sorgu ile alalım
-    const authorIds = posts.map(post => post.author_id);
-    const { data: authors } = await supabase.auth.admin.listUsers();
-    const authorsMap = authors?.users?.reduce((acc, user) => {
-      acc[user.id] = {
-        id: user.id,
-        name: user.user_metadata?.name || user.email,
-        avatar: user.user_metadata?.avatar_url
+      if (error) {
+        console.error('Posts query error:', error);
+        return { data: [], error, count: 0 };
+      }
+
+      // Postları formatla - şimdilik yazar bilgisi olmadan
+      const formattedPosts = posts.map(post => ({
+        ...post,
+        author: 'Anonim', // Şimdilik sabit değer
+        authorAvatar: '/images/default-avatar.webp', // Varsayılan avatar
+        date: new Date(post.created_at).toLocaleDateString('tr-TR', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        }),
+        views: post.views || 0
+      }));
+
+      return { 
+        data: formattedPosts, 
+        error: null, 
+        count: count || formattedPosts.length 
       };
-      return acc;
-    }, {});
-
-    // Post verilerine yazarları ekleyelim
-    const postsWithAuthors = posts.map(post => ({
-      ...post,
-      author: authorsMap[post.author_id]
-    }));
-
-    return { data: postsWithAuthors, error: null, count };
+    } catch (error) {
+      console.error('Posts query error:', error);
+      return { data: [], error, count: 0 };
+    }
   }
 
   async findBySlug(slug) {

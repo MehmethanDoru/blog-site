@@ -54,8 +54,19 @@ export class CategoryService {
         return null;
       }
 
-      console.log('Found category:', category);
-      return category;
+      // Get category stats
+      const stats = await this.repository.getStats(category.id);
+      
+      // Merge category data with stats
+      const categoryWithStats = {
+        ...category,
+        totalPosts: stats.totalPosts,
+        totalViews: stats.totalViews,
+        uniqueAuthors: stats.uniqueAuthors
+      };
+
+      console.log('Found category with stats:', categoryWithStats);
+      return categoryWithStats;
     } catch (error) {
       console.error('Category get error:', error);
       throw error;

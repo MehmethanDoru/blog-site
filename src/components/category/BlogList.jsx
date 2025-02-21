@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Eye, Clock } from 'lucide-react';
+import { Eye } from 'lucide-react';
 import { BlogService } from '@/lib/services/blog.service';
 
 const BlogList = ({ category }) => {
@@ -20,6 +20,13 @@ const BlogList = ({ category }) => {
     totalPages: 0,
     totalPosts: 0
   });
+
+  const formatNumber = (num) => {
+    if (!num) return '0';
+    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+    return num.toLocaleString();
+  };
 
   useEffect(() => {
     loadPosts();
@@ -110,18 +117,11 @@ const BlogList = ({ category }) => {
 
                   {/* Meta Information */}
                   <div className="flex items-center text-sm text-gray-500 space-x-4">
-                    <span>{post.author}</span>
-                    <span>•</span>
                     <span>{post.date}</span>
                     <span>•</span>
                     <div className="flex items-center space-x-1">
                       <Eye size={16} />
-                      <span>{post.views}</span>
-                    </div>
-                    <span>•</span>
-                    <div className="flex items-center space-x-1">
-                      <Clock size={16} />
-                      <span>{post.readTime}</span>
+                      <span>{formatNumber(post.views)}</span>
                     </div>
                   </div>
                 </div>

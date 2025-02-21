@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { UserCircle, FileText, Settings, LayoutDashboard, FolderKanban } from 'lucide-react';
+import { UserCircle, FileText, Settings, LayoutDashboard, FolderKanban, BookOpen } from 'lucide-react';
 import { AuthService } from '@/lib/services/auth.service';
 
 export default function ProfileSidebar() {
@@ -36,9 +36,14 @@ export default function ProfileSidebar() {
       icon: UserCircle
     },
     {
-      title: 'My Posts',
+      title: 'Posts',
       href: '/profile/posts',
       icon: FileText
+    },
+    {
+      title: 'Read History',
+      href: '/profile/read-history',
+      icon: BookOpen
     }
   ];
 

@@ -1,6 +1,14 @@
 import Image from 'next/image';
+import { FileText, Eye, Users } from 'lucide-react';
 
 const CategoryHeader = ({ data }) => {
+  const formatNumber = (num) => {
+    if (!num) return '0';
+    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+    return num.toLocaleString();
+  };
+
   return (
     <div className="relative h-[300px] w-full overflow-hidden">
 
@@ -26,10 +34,25 @@ const CategoryHeader = ({ data }) => {
             <p className="text-lg text-gray-200">
               {data.description}
             </p>
-            <div className="mt-6 inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full">
-              <span className="text-white font-medium">
-                {data.totalPosts || 0} blog
-              </span>
+            <div className="mt-6 flex flex-wrap gap-4">
+              <div className="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full">
+                <FileText size={16} className="text-white mr-2" />
+                <span className="text-white font-medium">
+                  {formatNumber(data.totalPosts)} Posts
+                </span>
+              </div>
+              <div className="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full">
+                <Eye size={16} className="text-white mr-2" />
+                <span className="text-white font-medium">
+                  {formatNumber(data.totalViews)} Views
+                </span>
+              </div>
+              <div className="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full">
+                <Users size={16} className="text-white mr-2" />
+                <span className="text-white font-medium">
+                  {formatNumber(data.uniqueAuthors)} Authors
+                </span>
+              </div>
             </div>
           </div>
         </div>

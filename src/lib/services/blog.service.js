@@ -23,14 +23,16 @@ export class BlogService {
     }
   }
 
-  async getPostBySlug(slug) {
+  async getPostBySlug(slug, userId = null) {
     try {
       if (!slug) {
         console.error('Slug parameter is missing');
         return null;
       }
-
+  
       console.log('Getting post by slug:', slug);
+      console.log('Current userId:', userId);
+  
       const { data: post, error } = await this.repository.findBySlug(slug);
       
       if (error) {
@@ -42,13 +44,25 @@ export class BlogService {
         console.log('Blog post not found for slug:', slug);
         return null;
       }
-
+  
       // View count increment
       try {
         await this.repository.incrementViews(slug);
       } catch (viewError) {
         console.error('View increment error:', viewError);
-        // View error will not prevent the post from being shown
+      }
+  
+      // Add to read history if user is logged in
+      if (userId) {
+        try {
+          console.log('Attempting to add to read history:', { userId, postId: post.id });
+          const readHistoryService = new ReadHistoryService();
+          await readHistoryService.addToHistory(userId, post.id);
+          console.log('Successfully added to read history');
+        } catch (historyError) {
+          console.error('Read history error:', historyError);
+          console.error('Full error details:', historyError.message);
+        }
       }
       
       return post;
