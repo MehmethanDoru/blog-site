@@ -25,16 +25,36 @@ export class BlogService {
 
   async getPostBySlug(slug) {
     try {
+      if (!slug) {
+        console.error('Slug parameter is missing');
+        return null;
+      }
+
+      console.log('Getting post by slug:', slug);
       const { data: post, error } = await this.repository.findBySlug(slug);
       
-      if (error) throw error;
+      if (error) {
+        console.error('Blog post get error:', error);
+        return null;
+      }
       
-      await this.repository.incrementViews(slug);
+      if (!post) {
+        console.log('Blog post not found for slug:', slug);
+        return null;
+      }
+
+      // View count increment
+      try {
+        await this.repository.incrementViews(slug);
+      } catch (viewError) {
+        console.error('View increment error:', viewError);
+        // View error will not prevent the post from being shown
+      }
       
       return post;
     } catch (error) {
       console.error('Blog post get error:', error);
-      throw error;
+      return null;
     }
   }
 
@@ -53,11 +73,16 @@ export class BlogService {
 
   async createPost(userId, postData) {
     try {
-      const { data: post, error } = await this.repository.create({
+      const data = {
         ...postData,
         author_id: userId,
-        created_at: new Date().toISOString()
-      });
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        views: 0,
+        slug: this.repository.generateSlug(postData.title)
+      };
+
+      const { data: post, error } = await this.repository.create(data);
       if (error) throw error;
       return post;
     } catch (error) {
@@ -68,10 +93,12 @@ export class BlogService {
 
   async updatePost(postId, postData) {
     try {
-      const { data: post, error } = await this.repository.update(postId, {
+      const data = {
         ...postData,
         updated_at: new Date().toISOString()
-      });
+      };
+
+      const { data: post, error } = await this.repository.update(postId, data);
       if (error) throw error;
       return post;
     } catch (error) {

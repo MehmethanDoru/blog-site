@@ -61,40 +61,41 @@ export class CategoryRepository {
 
   async getStats(categoryId) {
     try {
-      // Get total posts count
-      const { count: totalPosts } = await supabase
+      console.log('Fetching stats for category:', categoryId);
+
+      // Get posts with count
+      const { data: posts, error: postsError } = await supabase
         .from('posts')
-        .select('*', { count: 'exact', head: true })
+        .select(`
+          id,
+          views,
+          author_id
+        `)
         .eq('category_id', categoryId);
 
-      // Get total views
-      const { data: viewsData } = await supabase
-        .from('posts')
-        .select('views')
-        .eq('category_id', categoryId);
+      if (postsError) {
+        console.error('Error fetching posts:', postsError);
+        throw postsError;
+      }
 
-      const totalViews = viewsData?.reduce((sum, post) => sum + (post.views || 0), 0) || 0;
+      // Calculate stats
+      const totalPosts = posts?.length || 0;
+      const totalViews = posts?.reduce((sum, post) => sum + (post.views || 0), 0) || 0;
+      const uniqueAuthors = new Set(posts?.map(post => post.author_id) || []).size;
 
-      // Get unique authors count
-      const { data: authorsData } = await supabase
-        .from('posts')
-        .select('author_id')
-        .eq('category_id', categoryId);
-
-      const uniqueAuthors = new Set(authorsData?.map(post => post.author_id) || []).size;
-
-      return {
-        totalPosts: totalPosts || 0,
+      const stats = {
+        totalPosts,
         totalViews,
         uniqueAuthors
       };
+
+      console.log('Posts found:', posts);
+      console.log('Final stats:', stats);
+      return stats;
+
     } catch (error) {
       console.error('Error getting category stats:', error);
-      return {
-        totalPosts: 0,
-        totalViews: 0,
-        uniqueAuthors: 0
-      };
+      throw error;
     }
   }
 

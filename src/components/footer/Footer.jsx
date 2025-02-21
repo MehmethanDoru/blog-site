@@ -39,6 +39,7 @@ const Footer = () => {
                                     width={96}
                                     height={96}
                                     priority
+                                    sizes="(max-width: 768px) 80px, 112px"
                                     className="w-full h-full"
                                 />
                             </div>

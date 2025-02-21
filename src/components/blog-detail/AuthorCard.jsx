@@ -26,6 +26,7 @@ const AuthorCard = ({ author }) => {
             src={author.avatar || '/images/default-avatar.webp'}
             alt={author.name}
             fill
+            sizes="96px"
             className="rounded-full object-cover"
           />
         </div>

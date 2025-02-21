@@ -41,8 +41,20 @@ export class CategoryService {
 
   async getCategoryBySlug(slug) {
     try {
+      console.log('Getting category by slug:', slug);
       const { data: category, error } = await this.repository.findBySlug(slug);
-      if (error) throw error;
+      
+      if (error) {
+        console.error('Category get error:', error);
+        throw error;
+      }
+
+      if (!category) {
+        console.log('Category not found for slug:', slug);
+        return null;
+      }
+
+      console.log('Found category:', category);
       return category;
     } catch (error) {
       console.error('Category get error:', error);

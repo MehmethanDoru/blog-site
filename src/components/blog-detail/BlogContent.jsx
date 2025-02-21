@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 import { CalendarDays, Eye } from 'lucide-react';
 
@@ -51,12 +53,16 @@ const BlogContent = ({ data }) => {
               fill
               className="object-cover"
               priority
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </div>
         )}
 
         {/* blog content */}
-        <div className="prose prose-lg max-w-none mt-8" dangerouslySetInnerHTML={{ __html: data.content }} />
+        <div 
+          className="prose prose-lg max-w-none overflow-hidden mt-8 prose-headings:text-gray-900 prose-p:text-gray-700 prose-img:rounded-xl prose-img:w-full prose-img:object-cover" 
+          dangerouslySetInnerHTML={{ __html: data.content }} 
+        />
       </div>
     </article>
   );

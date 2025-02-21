@@ -15,19 +15,38 @@ export class UserRepository {
   }
 
   async update(id, data) {
-    return await supabase
-      .from('users')
-      .update({
+    const { data: userData, error } = await supabase.auth.updateUser({
+      data: {
+        name: data.name,
         bio: data.bio,
         website: data.website,
-        hackerrank: data.hackerrank,
         linkedin: data.linkedin,
         github: data.github,
-        updated_at: data.updated_at
-      })
-      .eq('id', id)
-      .select()
-      .single();
+        hackerrank: data.hackerrank,
+        updated_at: new Date().toISOString()
+      }
+    });
+
+    if (error) {
+      console.error('Error updating user:', error);
+      return { data: null, error };
+    }
+
+    return { 
+      data: {
+        id: userData.user.id,
+        email: userData.user.email,
+        name: userData.user.user_metadata?.name,
+        avatar: userData.user.user_metadata?.avatar_url,
+        bio: userData.user.user_metadata?.bio,
+        website: userData.user.user_metadata?.website,
+        linkedin: userData.user.user_metadata?.linkedin,
+        github: userData.user.user_metadata?.github,
+        hackerrank: userData.user.user_metadata?.hackerrank,
+        updated_at: userData.user.user_metadata?.updated_at
+      }, 
+      error: null 
+    };
   }
 
   async delete(id) {
@@ -39,11 +58,28 @@ export class UserRepository {
 
   // Custom queries
   async findById(id) {
-    return await supabase
-      .from(this.tableName)
-      .select('*')
-      .eq('id', id)
-      .single();
+    const { data: { user }, error } = await supabase.auth.getUser();
+    
+    if (error) {
+      console.error('Error getting user:', error);
+      return { data: null, error };
+    }
+
+    return { 
+      data: {
+        id: user.id,
+        email: user.email,
+        name: user.user_metadata?.name,
+        avatar: user.user_metadata?.avatar_url,
+        bio: user.user_metadata?.bio,
+        website: user.user_metadata?.website,
+        linkedin: user.user_metadata?.linkedin,
+        github: user.user_metadata?.github,
+        hackerrank: user.user_metadata?.hackerrank,
+        updated_at: user.user_metadata?.updated_at
+      }, 
+      error: null 
+    };
   }
 
   async findByEmail(email) {

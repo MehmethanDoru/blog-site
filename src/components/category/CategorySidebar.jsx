@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
-import { Newspaper, TrendingUp, Tag } from 'lucide-react';
+import { Newspaper } from 'lucide-react';
 import { CategoryService } from '@/lib/services/category.service';
+import { toast } from 'react-hot-toast';
 
 const CategorySidebar = ({ category }) => {
   const [loading, setLoading] = useState(true);
@@ -15,31 +15,50 @@ const CategorySidebar = ({ category }) => {
   });
 
   useEffect(() => {
-    loadData();
+    const fetchData = async () => {
+      if (!category) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        console.log('Loading stats for category:', category);
+        setLoading(true);
+        
+        const categoryService = new CategoryService();
+        const categoryStats = await categoryService.getCategoryStats(category.id);
+        
+        console.log('Received category stats:', categoryStats);
+        
+        if (categoryStats) {
+          setStats(categoryStats);
+        }
+      } catch (error) {
+        console.error('Error loading category stats:', error);
+        toast.error('Failed to load category statistics');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, [category]);
 
-  const loadData = async () => {
-    try {
-      const categoryService = new CategoryService();
-      
-      // Load category statistics
-      if (category) {
-        const categoryStats = await categoryService.getCategoryStats(category.id);
-        setStats(categoryStats);
-      }
-    } catch (error) {
-      console.error('Error loading sidebar data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const formatNumber = (num) => {
+    if (!num) return '0';
+    
+    if (num >= 1000000) {
+      return `${(num / 1000000).toFixed(1)}M`;
+    }
     if (num >= 1000) {
       return `${(num / 1000).toFixed(1)}K`;
     }
-    return num;
+    return num.toLocaleString();
   };
+
+  if (!category) {
+    return null;
+  }
 
   return (
     <div className="space-y-8">
@@ -47,7 +66,7 @@ const CategorySidebar = ({ category }) => {
       <div className="bg-white rounded-xl shadow-sm p-6">
         <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
           <Newspaper className="text-[#805aed]" size={20} />
-          Category Statistics
+          Statistics for <span className="text-[#805aed]">{category.name.toUpperCase()}</span> 
         </h3>
         <div className="space-y-4">
           {loading ? (
