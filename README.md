@@ -1,3 +1,41 @@
+# Claris - Technology Blog Site
+
+## Daily completed tasks
+
+### 19/02/2025
+- Completed Navbar and Footer Component
+- Completed Hero Section
+- Completed TechReviews Component
+- Completed EditorsPick Section
+- Completed BlogDetail Component
+- Started Supabase Integration
+
+### 20/02/2025
+- Added Login/Register with OTP Verification
+- Started transfor dynamic
+
+### 21/02/2025
+- Added Real History Tracking
+- Continue transform dynamic
+
+### 24/02/2025
+- Completed trasform dynamic
+- Improved ui/ux
+- Deploy
+
+## Highlights of the project
+- 6-digit OTP verification system (automatic input pass)
+- Real-time search experience
+- Tracking the number of views
+- Reading history
+- Category management (from Admin)
+- Category based filtering
+- Sorting as popular and latest
+- Post upload, profile update
+- Statistical data of the relevant category on the category page
+<br>and more...
+
+<br><br>
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
