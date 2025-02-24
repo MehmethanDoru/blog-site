@@ -3,37 +3,48 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import ReviewCard from './ReviewCard';
+import { BlogRepository } from '@/lib/repositories/blog.repository';
+import { useEffect, useState } from 'react';
+
 
 const TechReviews = () => {
-    const reviews = [
-        {
-            category: 'GADGET',
-            title: 'iPad Pro M1 Chip: Bringing The MacBook Pro Power',
-            excerpt: 'Cursus iaculis etiam in In nullam donec sem sed consequat scelerisque nibh amet, massa egestas risus, gravida vel amet, imperdiet...',
-            author: 'akbarh',
-            date: 'July 7, 2021',
-            image: '',
-            slug: 'ipad-pro-m1-chip-review'
-        },
-        {
-            category: 'GADGET',
-            title: 'Dell XPS 13 2021: The best Windows laptop now with OLED',
-            excerpt: 'Cursus iaculis etiam in In nullam donec sem sed consequat scelerisque nibh amet, massa egestas risus, gravida vel amet, imperdiet...',
-            author: 'akbarh',
-            date: 'July 7, 2021',
-            image: '',
-            slug: 'dell-xps-13-2021-review'
-        },
-        {
-            category: 'REVIEWS',
-            title: 'Watching Their Dust: Photographing Players in Pollination',
-            excerpt: 'Cursus iaculis etiam in In nullam donec sem sed consequat scelerisque nibh amet, massa egestas risus, gravida vel amet, imperdiet...',
-            author: 'akbarh',
-            date: 'July 7, 2021',
-            image: '',
-            slug: 'watching-their-dust-photography'
-        }
-    ];
+    const [reviews, setReviews] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchTechReviews = async () => {
+            try {
+                const blogRepo = new BlogRepository();
+                const { data: posts } = await blogRepo.findAll({
+                    limit: 3,
+                    filter: 'popular',
+                    category: 'technology'
+                });
+
+                if (posts) {
+                    setReviews(posts.map(post => ({
+                        id: post.id,
+                        category: post.categories?.name.toUpperCase() || 'TECHNOLOGY',
+                        title: post.title,
+                        excerpt: post.excerpt,
+                        date: new Date(post.created_at).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        }),
+                        image: post.image || '',
+                        slug: post.slug
+                    })));
+                }
+            } catch (error) {
+                console.error('Error loading tech reviews:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchTechReviews();
+    }, []);
 
     return (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 mt-[-30px] md:mt-[-20px]">
@@ -43,7 +54,7 @@ const TechReviews = () => {
                 <div className="col-span-9">
                     <div className="flex justify-between items-center mb-8">
                         <h2 className="text-2xl font-bold">Tech Reviews</h2>
-                        <Link href="/tech-reviews" className="text-[#805aed] hover:text-[#7950e9] text-sm font-medium flex items-center">
+                        <Link href="/category/technology" className="text-[#805aed] hover:text-[#7950e9] text-sm font-medium flex items-center">
                             More in Tech Reviews
                             <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -51,9 +62,24 @@ const TechReviews = () => {
                         </Link>
                     </div>
                     <div className="space-y-8">
-                        {reviews.map((review, index) => (
-                            <ReviewCard key={index} {...review} />
-                        ))}
+                        {loading ? (
+                            // Skeleton loading state
+                            Array(3).fill(0).map((_, index) => (
+                                <div key={index} className="animate-pulse flex space-x-6">
+                                    <div className="relative w-48 h-32 md:w-96 md:h-64 flex-shrink-0 bg-gray-200 rounded-xl"></div>
+                                    <div className="flex-1 space-y-4 py-1">
+                                        <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                                        <div className="h-6 bg-gray-200 rounded w-3/4"></div>
+                                        <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                                        <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            reviews.map((review, index) => (
+                                <ReviewCard key={index} {...review} />
+                            ))
+                        )}
                     </div>
                 </div>
 

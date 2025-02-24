@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { toast } from 'react-hot-toast';
 
 const Newsletter = () => {
     const [email, setEmail] = useState('');
@@ -28,6 +29,8 @@ const Newsletter = () => {
         setIsValid(true);
         setErrorMessage('');
         // Register to newsletter
+        toast.success('You have successfully subscribed to our newsletter!');
+        setEmail('');
     };
 
     return (

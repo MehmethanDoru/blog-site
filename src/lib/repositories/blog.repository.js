@@ -36,7 +36,7 @@ export class BlogRepository {
       .eq('id', id);
   }
 
-  async findAll({ page = 1, limit = 10, filter = 'latest', categoryId = null }) {
+  async findAll({ page = 1, limit = 10, filter = 'latest', categoryId = null, category = null }) {
     try {
       const from = (page - 1) * limit;
       const to = from + limit - 1;
@@ -49,17 +49,33 @@ export class BlogRepository {
       // Kategori filtresi
       if (categoryId) {
         query = query.eq('category_id', categoryId);
+      } else if (category) {
+        // Önce kategori slug'ını bul
+        const { data: categoryData } = await supabase
+          .from('categories')
+          .select('id')
+          .eq('slug', category.toLowerCase())
+          .single();
+
+        if (categoryData) {
+          query = query.eq('category_id', categoryData.id);
+        }
       }
 
       // Sıralama filtresi
       if (filter === 'popular') {
         query = query.order('views', { ascending: false });
+      } else if (filter === 'random') {
+        // Random sıralama için
+        query = query.order('created_at', { ascending: false }).limit(limit * 3); // Daha fazla post çek
       } else {
         query = query.order('created_at', { ascending: false });
       }
 
-      // Sayfalama
-      query = query.range(from, to);
+      // Sayfalama (random değilse)
+      if (filter !== 'random') {
+        query = query.range(from, to);
+      }
 
       const { data: posts, error, count } = await query;
 
@@ -68,12 +84,21 @@ export class BlogRepository {
         return { data: [], error, count: 0 };
       }
 
-      // Postları formatla - şimdilik yazar bilgisi olmadan
-      const formattedPosts = posts.map(post => ({
+      let finalPosts = posts;
+      
+      // Random sıralama için postları karıştır ve limit kadar al
+      if (filter === 'random' && posts.length > 0) {
+        finalPosts = posts
+          .sort(() => Math.random() - 0.5)
+          .slice(0, limit);
+      }
+
+      // Postları formatla
+      const formattedPosts = finalPosts.map(post => ({
         ...post,
-        author: 'Anonim', // Şimdilik sabit değer
-        authorAvatar: '/images/default-avatar.webp', // Varsayılan avatar
-        date: new Date(post.created_at).toLocaleDateString('tr-TR', {
+        author: post.author?.name || 'Anonymous',
+        authorAvatar: post.author?.avatar || '/images/default-avatar.webp',
+        date: new Date(post.created_at).toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'long',
           day: 'numeric'

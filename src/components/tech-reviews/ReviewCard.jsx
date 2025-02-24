@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-const ReviewCard = ({ category, title, excerpt, author, date, image, slug }) => {
+const ReviewCard = ({ category, title, excerpt, date, image, slug }) => {
     return (
         <article className="flex space-x-6">
             <Link href={`/blog/${slug}`} className="relative w-48 h-32 md:w-96 md:h-64 flex-shrink-0 overflow-hidden rounded-xl">
@@ -25,8 +25,6 @@ const ReviewCard = ({ category, title, excerpt, author, date, image, slug }) => 
                     </h3>
                     <p className="text-gray-600 text-sm md:text-lg line-clamp-2">{excerpt}</p>
                     <div className="flex items-center text-sm text-gray-500 space-x-4">
-                        <span>{author}</span>
-                        <span>•</span>
                         <span>{date}</span>
                     </div>
                 </div>
