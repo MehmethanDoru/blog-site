@@ -130,6 +130,7 @@ export default function WriteForm() {
         created_at: '',
         updated_at: ''
       });
+      window.location.reload();
     } catch (error) {
       console.error('Error publishing post:', error);
       if (error.message.includes('duplicate key value violates unique constraint')) {

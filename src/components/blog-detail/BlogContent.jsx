@@ -9,7 +9,7 @@ const BlogContent = ({ data }) => {
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('tr-TR', {
       year: 'numeric',
-      month: 'long',
+      month: 'numeric',
       day: 'numeric'
     });
   };
@@ -28,7 +28,7 @@ const BlogContent = ({ data }) => {
     <article className="bg-white rounded-xl shadow-lg p-6 mb-8">
       <div className="space-y-4">
         <div>
-          <span className="text-[#805aed] font-semibold">{data.categories?.name || 'general'}</span>
+          <span className="text-[#805aed] font-semibold">{data.categories?.name.toUpperCase() || 'general'}</span>
           <h1 className="text-3xl md:text-4xl font-bold mt-2">{data.title}</h1>
         </div>
 

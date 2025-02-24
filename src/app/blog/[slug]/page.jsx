@@ -1,8 +1,7 @@
 import { notFound } from 'next/navigation';
 import { BlogService } from '@/lib/services/blog.service';
 import BlogContent from '@/components/blog-detail/BlogContent';
-import CommentSection from '@/components/blog-detail/CommentSection';
-import AuthorCard from '@/components/blog-detail/AuthorCard';
+// import AuthorCard from '@/components/blog-detail/AuthorCard';
 import RelatedPosts from '@/components/blog-detail/RelatedPosts';
 import ReadHistoryTracker from '@/components/blog-detail/ReadHistoryTracker';
 
@@ -47,32 +46,24 @@ export default async function BlogPost({ params: { slug } }) {
       currentPostId: post.id,
       limit: 3
     });
-
+    
     return (
       <main className="gradient-background min-h-screen relative">
         <div className="content-wrapper">
           <div className="container mx-auto px-4 lg:px-8 py-8 md:py-12">
-            {/* Okuma geçmişi takibi */}
+
             <ReadHistoryTracker postId={post.id} />
             
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               <div className="lg:col-span-8">
                 <BlogContent data={post} />
-                <div className="hidden lg:block">
-                  <CommentSection postId={slug} />
-                </div>
               </div>
 
               <div className="lg:col-span-4 space-y-8">
                 <div className="sticky top-8">
-                  <AuthorCard author={post.users} />
+                  {/* <AuthorCard author={post.users} /> */}
                   <RelatedPosts posts={relatedPosts} />
                 </div>
-              </div>
-
-              {/* comments will be shown at the bottom on mobile */}
-              <div className="lg:hidden col-span-1 lg:col-span-12">
-                <CommentSection postId={slug} />
               </div>
             </div>
           </div>

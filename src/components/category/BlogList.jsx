@@ -28,6 +28,14 @@ const BlogList = ({ category }) => {
     return num.toLocaleString();
   };
 
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('tr-TR', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric'
+    });
+  };
+
   useEffect(() => {
     loadPosts();
   }, [category.id, page, filter]);
@@ -117,7 +125,7 @@ const BlogList = ({ category }) => {
 
                   {/* Meta Information */}
                   <div className="flex items-center text-sm text-gray-500 space-x-4">
-                    <span>{post.date}</span>
+                    <span>{formatDate(post.created_at)}</span>
                     <span>•</span>
                     <div className="flex items-center space-x-1">
                       <Eye size={16} />
@@ -139,7 +147,7 @@ const BlogList = ({ category }) => {
             disabled={pagination.currentPage === 1}
             className="px-4 py-2 text-sm rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-gray-100 text-gray-600 hover:bg-gray-200"
           >
-            Önceki
+            Prev.
           </button>
 
           {/* Page Numbers */}
@@ -179,7 +187,7 @@ const BlogList = ({ category }) => {
             disabled={pagination.currentPage === pagination.totalPages}
             className="px-4 py-2 text-sm rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-gray-100 text-gray-600 hover:bg-gray-200"
           >
-            Sonraki
+            Next
           </button>
         </div>
       )}

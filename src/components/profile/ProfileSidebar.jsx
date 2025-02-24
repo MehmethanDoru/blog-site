@@ -49,20 +49,10 @@ export default function ProfileSidebar() {
 
   const adminMenuItems = [
     {
-      title: 'Post Management',
-      href: '/profile/post-management',
-      icon: LayoutDashboard
-    },
-    {
       title: 'Category Management',
       href: '/profile/category-management',
       icon: FolderKanban
     },
-    {
-      title: 'Account Settings',
-      href: '/profile/settings',
-      icon: Settings
-    }
   ];
 
   console.log('Session State:', session);

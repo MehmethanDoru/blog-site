@@ -14,7 +14,7 @@ export default function ReadHistoryTracker({ postId }) {
         const session = await authService.getCurrentSession();
         
         if (session?.user?.id) {
-          console.log('Adding to read history after 4 seconds of reading');
+          console.log('Adding to read history after 3 seconds of reading');
           const readHistoryService = new ReadHistoryService();
           await readHistoryService.addToHistory(session.user.id, postId);
         }
