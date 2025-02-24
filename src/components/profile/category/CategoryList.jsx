@@ -1,11 +1,15 @@
 'use client';
 
 import Image from 'next/image';
+import { useNavbar } from '@/contexts/NavbarContext';
 
 export default function CategoryList({ categories, onEdit, onDelete }) {
-  const handleDelete = (categoryId) => {
-    if (window.confirm('Are you sure you want to delete this category?')) {
-      onDelete(categoryId);
+  const { refreshNavbar } = useNavbar();
+
+  const handleDelete = async (categoryId) => {
+    if (window.confirm('Bu kategoriyi silmek istediğinizden emin misiniz?')) {
+      await onDelete(categoryId);
+      refreshNavbar(); // Navbar'ı güncelle
     }
   };
 

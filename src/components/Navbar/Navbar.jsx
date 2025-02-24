@@ -8,10 +8,12 @@ import { CategoryService } from '@/lib/services/category.service';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import SearchModal from '../search/SearchModal';
+import { useNavbar } from '@/contexts/NavbarContext';
 import './Navbar.css';
 
 const Navbar = () => {
     const router = useRouter();
+    const { navbarKey } = useNavbar();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
     const [isMoreOpen, setIsMoreOpen] = useState(false);
@@ -23,7 +25,7 @@ const Navbar = () => {
     useEffect(() => {
         checkSession();
         loadCategories();
-    }, []);
+    }, [navbarKey]);
 
     const checkSession = async () => {
         try {
@@ -59,6 +61,12 @@ const Navbar = () => {
             console.error('Logout error:', error);
             toast.error('Logout error');
         }
+    };
+
+    const handleProfileClick = (path) => {
+        router.push(path);
+        setIsProfileMenuOpen(false);
+        checkSession(); // Profil menüsünden bir yere tıklandığında session'ı yeniden kontrol et
     };
 
     return (
@@ -130,18 +138,18 @@ const Navbar = () => {
 
                                         {isProfileMenuOpen && (
                                             <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20">
-                                                <Link
-                                                    href="/profile"
-                                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                <button
+                                                    onClick={() => handleProfileClick('/profile')}
+                                                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                                 >
                                                     Profile
-                                                </Link>
-                                                <Link
-                                                    href="/profile/posts"
-                                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                </button>
+                                                <button
+                                                    onClick={() => handleProfileClick('/profile/posts')}
+                                                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                                 >
                                                     My Posts
-                                                </Link>
+                                                </button>
                                                 <button
                                                     onClick={handleLogout}
                                                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -193,18 +201,18 @@ const Navbar = () => {
 
                                 {isProfileMenuOpen && (
                                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20">
-                                        <Link
-                                            href="/profile"
-                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                        <button
+                                            onClick={() => handleProfileClick('/profile')}
+                                            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                         >
                                             Profile
-                                        </Link>
-                                        <Link
-                                            href="/profile/posts"
-                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                        </button>
+                                        <button
+                                            onClick={() => handleProfileClick('/profile/posts')}
+                                            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                         >
                                             My Posts
-                                        </Link>
+                                        </button>
                                         <button
                                             onClick={handleLogout}
                                             className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

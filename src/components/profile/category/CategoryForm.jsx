@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useNavbar } from '@/contexts/NavbarContext';
 
 export default function CategoryForm({ onSubmit, initialData = null, onCancel }) {
+  const { refreshNavbar } = useNavbar();
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
@@ -49,9 +51,11 @@ export default function CategoryForm({ onSubmit, initialData = null, onCancel })
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    await onSubmit(formData);
+    refreshNavbar();
+    
     if (!initialData) {
       setFormData({
         name: '',
