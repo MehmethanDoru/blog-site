@@ -30,18 +30,6 @@ const FeaturedPost = ({ category, title, excerpt, author, date, image, slug }) =
                         {excerpt}
                     </p>
                     <div className="flex items-center space-x-4 pt-2">
-                        <div className="flex items-center space-x-2">
-                            <div className="w-8 h-8 rounded-full bg-gray-300 overflow-hidden">
-                                <Image
-                                    src={author?.avatar || '/images/default-avatar.webp'}
-                                    alt={author?.name}
-                                    width={32}
-                                    height={32}
-                                    className="object-cover"
-                                />
-                            </div>
-                            <span className="text-sm font-medium">{author?.name}</span>
-                        </div>
                         <span className="text-sm text-gray-300">{date}</span>
                     </div>
                 </div>
