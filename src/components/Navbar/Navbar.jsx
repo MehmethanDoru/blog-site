@@ -7,6 +7,7 @@ import { AuthService } from '@/lib/services/auth.service';
 import { CategoryService } from '@/lib/services/category.service';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
+import SearchModal from '../search/SearchModal';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -14,6 +15,7 @@ const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
     const [isMoreOpen, setIsMoreOpen] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [session, setSession] = useState(null);
     const [categories, setCategories] = useState({ mainCategories: [], moreCategories: [] });
     const [loading, setLoading] = useState(true);
@@ -151,8 +153,8 @@ const Navbar = () => {
                                     </div>
                                 ) : (
                                     <>
-                                        <Link href="/subscribe" className="text-medium font-bold text-[#805aed] hover:text-[#704ece] transition-colors">
-                                            Subscribe
+                                        <Link href="/auth/register" className="text-medium font-bold text-[#805aed] hover:text-[#704ece] transition-colors">
+                                            Register
                                         </Link>
                                         <Link href="/auth/login" className="text-medium font-medium hover:text-[#805aed] text-gray-700 transition-colors">
                                             Login
@@ -161,7 +163,10 @@ const Navbar = () => {
                                 )}
                             </>
                         )}
-                        <button className="p-2 text-gray-600 transition-colors hover:text-[#805aed]">
+                        <button 
+                            onClick={() => setIsSearchOpen(true)} 
+                            className="p-2 text-gray-600 transition-colors hover:text-[#805aed]"
+                        >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
@@ -246,8 +251,8 @@ const Navbar = () => {
                         ))}
                         {!loading && !session && (
                             <>
-                                <Link href="/subscribe" className="block px-3 py-2 text-sm font-medium text-[#805aed] transition-colors">
-                                    Subscribe
+                                <Link href="/auth/register" className="block px-3 py-2 text-sm font-medium text-[#805aed] transition-colors">
+                                    Register
                                 </Link>
                                 <Link href="/auth/login" className="block px-3 py-2 text-sm font-medium text-gray-700 transition-colors">
                                     Login
@@ -257,6 +262,8 @@ const Navbar = () => {
                     </div>
                 </div>
             )}
+
+            <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
         </nav>
     );
 };

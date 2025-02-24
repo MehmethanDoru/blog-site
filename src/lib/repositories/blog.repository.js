@@ -266,4 +266,27 @@ export class BlogRepository {
       return null;
     }
   }
+
+  async search(query, { page = 1, limit = 10 }) {
+    try {
+      const from = (page - 1) * limit;
+      const to = from + limit - 1;
+
+      let searchQuery = supabase
+        .from('posts')
+        .select('*, categories(*)')
+        .or(`title.ilike.%${query}%, content.ilike.%${query}%`)
+        .order('created_at', { ascending: false })
+        .range(from, to);
+
+      const { data, error, count } = await searchQuery;
+
+      if (error) throw error;
+
+      return { data, count };
+    } catch (error) {
+      console.error('Search error:', error);
+      throw error;
+    }
+  }
 }
