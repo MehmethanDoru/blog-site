@@ -82,6 +82,7 @@ export default function ProfileForm() {
       toast.success('Profile updated successfully');
       
       await loadProfile();
+      window.location.reload();
     } catch (error) {
       console.error('Update error:', error);
       toast.error('Update error');
