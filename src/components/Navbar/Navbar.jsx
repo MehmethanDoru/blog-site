@@ -55,6 +55,7 @@ const Navbar = () => {
             const authService = new AuthService();
             await authService.signOut();
             setSession(null);
+            setIsMenuOpen(false);
             toast.success('Successfully logged out');
             window.location.href = '/';
         } catch (error) {
@@ -66,7 +67,13 @@ const Navbar = () => {
     const handleProfileClick = (path) => {
         router.push(path);
         setIsProfileMenuOpen(false);
-        checkSession(); // Profil menüsünden bir yere tıklandığında session'ı yeniden kontrol et
+        setIsMenuOpen(false);
+        checkSession();
+    };
+
+    const handleCategoryClick = () => {
+        setIsMenuOpen(false);
+        setIsMoreOpen(false);
     };
 
     return (
@@ -74,7 +81,7 @@ const Navbar = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     <div className="flex items-center space-x-8">
-                        <Link href="/" className="flex items-center space-x-2">
+                        <Link href="/" onClick={() => setIsMenuOpen(false)} className="flex items-center space-x-2">
                             <Image src="/images/common/logo.png" alt="Claris Logo" width={96} height={96} className="h-24 w-auto" />
                         </Link>
 
@@ -173,7 +180,7 @@ const Navbar = () => {
                         )}
                         <button 
                             onClick={() => setIsSearchOpen(true)} 
-                            className="p-2 text-gray-600 transition-colors hover:text-[#805aed]"
+                            className="p-2 text-gray-600 transition-colors hover:text-[#805aed] z-50"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -223,7 +230,10 @@ const Navbar = () => {
                                 )}
                             </div>
                         )}
-                        <button className="p-2 text-gray-600 transition-colors">
+                        <button 
+                            onClick={() => setIsSearchOpen(true)}
+                            className="p-2 text-gray-600 transition-colors hover:text-[#805aed]"
+                        >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
@@ -252,6 +262,7 @@ const Navbar = () => {
                             <Link
                                 key={category.id}
                                 href={`/category/${category.slug}`}
+                                onClick={handleCategoryClick}
                                 className="block px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:text-[#805aed]"
                             >
                                 {category.name.toUpperCase()}
@@ -259,10 +270,18 @@ const Navbar = () => {
                         ))}
                         {!loading && !session && (
                             <>
-                                <Link href="/auth/register" className="block px-3 py-2 text-sm font-medium text-[#805aed] transition-colors">
+                                <Link 
+                                    href="/auth/register" 
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="block px-3 py-2 text-sm font-medium text-[#805aed] transition-colors"
+                                >
                                     Register
                                 </Link>
-                                <Link href="/auth/login" className="block px-3 py-2 text-sm font-medium text-gray-700 transition-colors">
+                                <Link 
+                                    href="/auth/login" 
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="block px-3 py-2 text-sm font-medium text-gray-700 transition-colors"
+                                >
                                     Login
                                 </Link>
                             </>
