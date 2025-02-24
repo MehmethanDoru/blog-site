@@ -1,8 +1,8 @@
 import RegisterForm from '@/components/auth/RegisterForm';
 
 export const metadata = {
-  title: 'Kayıt Ol - TechWire',
-  description: 'TechWire\'a kayıt olun ve teknoloji dünyasındaki son gelişmeleri takip edin.',
+  title: 'Register - Claris',
+  description: 'Register to your Claris account.',
 };
 
 export default function RegisterPage() {

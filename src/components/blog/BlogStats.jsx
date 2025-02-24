@@ -26,7 +26,7 @@ export default function BlogStats({ authorId = null }) {
       
       setStats(data);
     } catch (error) {
-      console.error('İstatistik yükleme hatası:', error);
+      console.error('Error loading stats:', error);
     } finally {
       setLoading(false);
     }

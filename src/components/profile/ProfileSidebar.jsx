@@ -16,8 +16,8 @@ export default function ProfileSidebar() {
       try {
         const authService = new AuthService();
         const currentSession = await authService.getCurrentSession();
-        console.log('Current Session:', currentSession);
-        console.log('Is Admin:', currentSession?.user?.app_metadata?.isAdmin);
+        // console.log('Current Session:', currentSession);
+        // console.log('Is Admin:', currentSession?.user?.app_metadata?.isAdmin);
         setSession(currentSession);
       } catch (error) {
         console.error('Session check error:', error);
@@ -55,8 +55,8 @@ export default function ProfileSidebar() {
     },
   ];
 
-  console.log('Session State:', session);
-  console.log('Is Admin Check:', session?.user?.app_metadata?.isAdmin);
+  // console.log('Session State:', session);
+  // console.log('Is Admin Check:', session?.user?.app_metadata?.isAdmin);
 
   const menuItems = session?.user?.app_metadata?.isAdmin 
     ? [...baseMenuItems, ...adminMenuItems]

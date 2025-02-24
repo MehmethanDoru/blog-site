@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import { AuthService } from '@/lib/services/auth.service';
 
-export default function VerifyForm() {
+function VerifyFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
@@ -21,13 +21,13 @@ export default function VerifyForm() {
   }, [searchParams]);
 
   const handleCodeChange = (index, value) => {
-    if (value.length > 1) return; // Sadece tek karakter
+    if (value.length > 1) return; // Only one character
     
     const newCode = [...code];
     newCode[index] = value;
     setCode(newCode);
 
-    // Otomatik olarak sonraki input'a geç
+    // Automatically move to the next input
     if (value !== '' && index < 5) {
       const nextInput = document.getElementById(`code-${index + 1}`);
       if (nextInput) nextInput.focus();
@@ -35,7 +35,7 @@ export default function VerifyForm() {
   };
 
   const handleKeyDown = (index, e) => {
-    // Backspace tuşuna basıldığında önceki input'a geç
+    // When the Backspace key is pressed, move to the previous input
     if (e.key === 'Backspace' && index > 0 && code[index] === '') {
       const prevInput = document.getElementById(`code-${index - 1}`);
       if (prevInput) prevInput.focus();
@@ -49,7 +49,7 @@ export default function VerifyForm() {
 
     const verificationCode = code.join('');
     if (verificationCode.length !== 6) {
-      setError('Lütfen 6 haneli kodu eksiksiz girin');
+      setError('Please enter the 6-digit code completely');
       setLoading(false);
       return;
     }
@@ -57,10 +57,10 @@ export default function VerifyForm() {
     try {
       const authService = new AuthService();
       await authService.verifyEmail(email, verificationCode);
-      toast.success('E-posta adresiniz doğrulandı!');
+      toast.success('Your email address has been verified!');
       router.push('/auth/login');
     } catch (error) {
-      console.error('Doğrulama hatası:', error);
+      console.error('Verification error:', error);
       setError(error.message);
       toast.error(error.message);
     } finally {
@@ -72,16 +72,16 @@ export default function VerifyForm() {
     try {
       const authService = new AuthService();
       await authService.resendVerificationCode(email);
-      toast.success('Yeni doğrulama kodu gönderildi!');
+      toast.success('New verification code sent!');
     } catch (error) {
-      console.error('Kod gönderme hatası:', error);
+      console.error('Code sending error:', error);
       toast.error(error.message);
     }
   };
 
   return (
     <div className="bg-white p-8 rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold text-center mb-6">E-posta Doğrulama</h1>
+      <h1 className="text-2xl font-bold text-center mb-6">Email Verification</h1>
       
       {error && (
         <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-md text-sm">
@@ -90,7 +90,7 @@ export default function VerifyForm() {
       )}
 
       <p className="text-center text-gray-600 mb-6">
-        {email} adresine gönderilen 6 haneli doğrulama kodunu girin
+        Enter the 6-digit verification code sent to {email}
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -114,7 +114,7 @@ export default function VerifyForm() {
           disabled={loading}
           className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? 'Doğrulanıyor...' : 'Doğrula'}
+          {loading ? 'Verifying...' : 'Verify'}
         </button>
       </form>
 
@@ -123,9 +123,30 @@ export default function VerifyForm() {
           onClick={handleResendCode}
           className="text-sm text-indigo-600 hover:text-indigo-500"
         >
-          Kodu tekrar gönder
+          Resend Code
         </button>
       </div>
     </div>
+  );
+}
+
+export default function VerifyForm() {
+  return (
+    <Suspense fallback={
+      <div className="bg-white p-8 rounded-lg shadow-md animate-pulse">
+        <div className="h-8 bg-gray-200 rounded w-3/4 mb-6"></div>
+        <div className="space-y-4">
+          <div className="h-4 bg-gray-200 rounded w-full"></div>
+          <div className="flex justify-center space-x-2">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="w-12 h-12 bg-gray-200 rounded-lg"></div>
+            ))}
+          </div>
+          <div className="h-10 bg-gray-200 rounded w-full"></div>
+        </div>
+      </div>
+    }>
+      <VerifyFormContent />
+    </Suspense>
   );
 } 

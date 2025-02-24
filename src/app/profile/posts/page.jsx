@@ -2,7 +2,7 @@ import WriteForm from '@/components/profile/write/WriteForm';
 import ProfileSidebar from '@/components/profile/ProfileSidebar';
 
 export const metadata = {
-  title: 'Write Blog - TechWire',
+  title: 'Write Blog - Claris',
   description: 'Write a new blog post.',
 };
 

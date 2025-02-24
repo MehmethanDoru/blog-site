@@ -1,8 +1,8 @@
 import LoginForm from '@/components/auth/LoginForm';
 
 export const metadata = {
-  title: 'Giriş Yap - TechWire',
-  description: 'TechWire hesabınıza giriş yapın.',
+  title: 'Login - Claris',
+  description: 'Login to your Claris account.',
 };
 
 export default function LoginPage() {

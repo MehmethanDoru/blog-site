@@ -2,7 +2,7 @@ import ReadHistoryList from '@/components/profile/read-history/ReadHistoryList';
 import ProfileSidebar from '@/components/profile/ProfileSidebar';
 
 export const metadata = {
-  title: 'Read History - TechWire',
+  title: 'Read History - Claris',
   description: 'View your reading history.',
 };
 

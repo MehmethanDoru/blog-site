@@ -61,7 +61,7 @@ export class CategoryRepository {
 
   async getStats(categoryId) {
     try {
-      console.log('Fetching stats for category:', categoryId);
+      // console.log('Fetching stats for category:', categoryId);
 
       // Get posts with count
       const { data: posts, error: postsError } = await supabase
@@ -89,8 +89,8 @@ export class CategoryRepository {
         uniqueAuthors
       };
 
-      console.log('Posts found:', posts);
-      console.log('Final stats:', stats);
+      // console.log('Posts found:', posts);
+      // console.log('Final stats:', stats);
       return stats;
 
     } catch (error) {

@@ -14,7 +14,7 @@ export class ReadHistoryRepository {
   }
 
   async create(data) {
-    console.log('Creating read history record:', data); // Debug için
+    
 
     const response = await supabase
       .from(this.tableName)
@@ -22,20 +22,12 @@ export class ReadHistoryRepository {
       .select()
       .single();
 
-    console.log('Supabase response:', response); // Debug için
-
-    if (response.error) {
-      console.error('Supabase error:', response.error); // Debug için
-    }
-
     return response;
   }
 
   async findByUserId(userId, { page = 1, limit = 10 }) {
     const from = (page - 1) * limit;
     const to = from + limit - 1;
-
-    console.log('Fetching read history for user:', userId); // Debug için
 
     const response = await supabase
       .from(this.tableName)
@@ -59,8 +51,6 @@ export class ReadHistoryRepository {
       .eq('user_id', userId)
       .order('created_at', { ascending: false })
       .range(from, to);
-
-    console.log('Read history response:', response); // Debug için
 
     return response;
   }

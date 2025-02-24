@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "TechWire - Latest Technology News",
-  description: "Stay updated with the latest technology news, reviews, and insights.",
+  title: "Claris - Latest Technology Blogs",
+  description: "Stay updated with the latest technology blogs, reviews, and insights.",
 };
 
 export default function RootLayout({ children }) {

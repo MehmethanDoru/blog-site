@@ -75,7 +75,7 @@ const Navbar = () => {
                 <div className="flex justify-between items-center h-16">
                     <div className="flex items-center space-x-8">
                         <Link href="/" className="flex items-center space-x-2">
-                            <Image src="/images/common/logo.png" alt="TechWire Logo" width={96} height={96} className="h-24 w-auto" />
+                            <Image src="/images/common/logo.png" alt="Claris Logo" width={96} height={96} className="h-24 w-auto" />
                         </Link>
 
                         {/* Desktop Menu */}

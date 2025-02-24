@@ -30,8 +30,6 @@ export class BlogService {
         return null;
       }
   
-      console.log('Getting post by slug:', slug);
-      console.log('Current userId:', userId);
   
       const { data: post, error } = await this.repository.findBySlug(slug);
       
